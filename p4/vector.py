@@ -1,3 +1,5 @@
+from math import sqrt
+
 class Vector(object):
     def __init__(self, coordinates):
         try:
@@ -12,10 +14,55 @@ class Vector(object):
         except TypeError:
             raise TypeError('The coordinates must be an iterable')
 
+    def plus(self,obj):
+        result = [ x + y for x,y in zip(self.coordinates,obj.coordinates)]
+        return Vector(result)
+
+    def minus(self,obj):
+        result = [ x - y for x,y in zip(self.coordinates,obj.coordinates)]
+        return Vector(result)
+
+    def times_scalar(self,obj):
+        result = [ x * obj for x in self.coordinates]
+        return Vector(result)
+
+    def magnitude(self):
+        pow_2_list = [ x**2 for x in self.coordinates]
+        return sqrt(sum(pow_2_list))
+
+    def normalize(self):
+        try:
+            self_mag = self.magnitude()
+            return self.times_scalar( 1.0/self_mag )
+        except ZeroDivisionError:
+            raise Exception('Can not normalize the zero vector')
 
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
 
-
     def __eq__(self, v):
         return self.coordinates == v.coordinates
+
+# s1 = Vector([8.218,-9.341])
+# s2 = Vector([-1.129,2.111])
+# print(s1.plus(s2))
+
+# s3 = Vector([7.119,8.215])
+# s4 = Vector([-8.223,0.878])
+# print(s3.minus(s4))
+
+# s5 = 7.41
+# s6 = Vector([1.671,-1.012,-0.318])
+# print(s6.times_scalar(s5))
+
+s1 = Vector([-0.221,7.437])
+print( s1.magnitude() )
+
+s2 = Vector([8.813,-1.331,-6.247])
+print( s2.magnitude() )
+
+s3 = Vector([5.581,-2.136])
+print( s3.direction() )
+
+s4 = Vector([1.996,3.108,-4.554])
+print( s4.direction() )
