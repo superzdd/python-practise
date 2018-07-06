@@ -7,6 +7,8 @@ getcontext().prec = 30
 
 class Vector(object):
     CANNOT_NORMALIZE_ZERO_VECTOR_MSG = 'Can not normalize the zero vector'
+    
+    ONLY_DEFINED_IN_TWO_THREE_DIMS_MSG = 'Only defined in two three dims'
 
     def __init__(self, coordinates):
         try:
@@ -35,7 +37,7 @@ class Vector(object):
 
     def magnitude(self):
         pow_2_list = [Decimal(x)**2 for x in self.coordinates]
-        return  Decimal(str(sqrt(sum(pow_2_list))))
+        return Decimal(str(sqrt(sum(pow_2_list))))
 
     def normalize(self):
         try:
@@ -52,7 +54,7 @@ class Vector(object):
         try:
             u1 = self.normalize()
             u2 = obj.normalize()
-            
+
             res = math.acos(u1.dot(u2))
             if in_degree:
                 res = res * 180. / math.pi
@@ -70,9 +72,9 @@ class Vector(object):
         if self.is_zero_vector() or obj.is_zero_vector():
             return True
 
-        u1 = self.normalize()    
+        u1 = self.normalize()
         u2 = obj.normalize()
-        abs_dot = round(abs(u1.dot(u2)),10)
+        abs_dot = round(abs(u1.dot(u2)), 10)
 
         print('dot is {}'.format(abs_dot))
         return (abs_dot > (1 - tolerance)) and (abs_dot < (1 + tolerance))
@@ -80,14 +82,14 @@ class Vector(object):
     def is_orthogonal(self, obj, tolerance=1e-10):
         if self.is_zero_vector() or obj.is_zero_vector():
             return True
-        u1 = self.normalize()    
+        u1 = self.normalize()
         u2 = obj.normalize()
-        dot = round(abs(u1.dot(u2)),10)
+        dot = round(abs(u1.dot(u2)), 10)
         print('dot is {}'.format(dot))
         return abs(dot) <= tolerance
-    
+
     # 获取向量在base向量上的投影
-    def component_parallel_to(self,base):
+    def component_parallel_to(self, base):
         try:
             u_b = base.normalize()
             m_v = self.dot(u_b)
@@ -99,7 +101,7 @@ class Vector(object):
                 raise e
 
     # 获取向量在base向量上的投影向量的另一直角边向量
-    def component_orthogonal_to(self,base):
+    def component_orthogonal_to(self, base):
         try:
             pro_self = self.component_parallel_to(base)
             return self.minus(pro_self)
@@ -108,6 +110,35 @@ class Vector(object):
                 raise Exception('Cannot compute an angle with zero vector')
             else:
                 raise e
+
+    # 向量积
+    def cross_product(self, v):
+        try:
+            x_1, y_1, z_1 = self.coordinates
+            x_2, y_2, z_2 = v.coordinates
+
+            new_coordinates = [y_1*z_2 - y_2*z_1,
+                               -1*(x_1*z_2 - x_2*z_1),
+                               x_1*y_2 - x_2*y_1]
+            return Vector(new_coordinates)
+        except Exception as e:
+            msg = str(e)
+            if ( msg == 'need more than 2 values to unpack'):
+                self_embedded_in_R3 = Vector(self.coordinates + ('0',))
+                v_embedded_in_R3 = Vector(v.coordinates + ('0',))
+                return self_embedded_in_R3.cross_product(v_embedded_in_R3)
+            elif ( msg == 'too many values to unpack' or msg == 'need more than 1 value to unpack'):
+                raise Exception(self.ONLY_DEFINED_IN_TWO_THREE_DIMS_MSG)
+            else:
+                raise e
+    
+    # 计算两向量的平行四边形面积
+    def acreage_parallelogram(self,w):
+        return self.cross_product(w).magnitude()
+        
+    # 计算两向量的三角形面积
+    def acreage_triangle(self,w):
+        return self.acreage_parallelogram(w)/2
 
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
@@ -180,17 +211,32 @@ class Vector(object):
 # w = Vector(['-2.155','-9.353','-9.473'])
 # print (v.projection_orthogonal(w))
 
-v = Vector(['3.009','-6.172','3.692','-2.51'])
-w = Vector(['6.404','-9.144','2.759','8.718'])
-pro = v.component_parallel_to(w)
-pro_orh = v.component_orthogonal_to(w)
-sum_p_po = pro.plus(pro_orh)
+# v = Vector(['3.009', '-6.172', '3.692', '-2.51'])
+# w = Vector(['6.404', '-9.144', '2.759', '8.718'])
+# pro = v.component_parallel_to(w)
+# pro_orh = v.component_orthogonal_to(w)
+# sum_p_po = pro.plus(pro_orh)
 
-print (pro)
-print (pro_orh)
-print (sum_p_po)
+# print(pro)
+# print(pro_orh)
+# print(sum_p_po)
 
 # v = Vector([3.039,1.879])
 # print(v)
 # w = Vector(['3.039','1.879'])
 # print(w)
+
+v = Vector(['8.462', '7.893', '-8.187'])
+w = Vector(['6.984', '-5.975', '4.778'])
+
+print(v.cross_product(w))
+
+v = Vector(['-8.987', '-9.838', '5.031'])
+w = Vector(['-4.268', '-1.861', '-8.866'])
+
+print(v.acreage_parallelogram(w))
+
+v = Vector(['1.5', '9.547', '3.691'])
+w = Vector(['-6.007', '0.124', '5.772'])
+
+print(v.acreage_triangle(w))
