@@ -85,6 +85,29 @@ class Vector(object):
         dot = round(abs(u1.dot(u2)),10)
         print('dot is {}'.format(dot))
         return abs(dot) <= tolerance
+    
+    # 获取向量在base向量上的投影
+    def component_parallel_to(self,base):
+        try:
+            u_b = base.normalize()
+            m_v = self.dot(u_b)
+            return u_b.times_scalar(m_v)
+        except Exception as e:
+            if str(e) == self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG:
+                raise Exception('Cannot compute an angle with zero vector')
+            else:
+                raise e
+
+    # 获取向量在base向量上的投影向量的另一直角边向量
+    def component_orthogonal_to(self,base):
+        try:
+            pro_self = self.component_parallel_to(base)
+            return self.minus(pro_self)
+        except Exception as e:
+            if str(e) == self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG:
+                raise Exception('Cannot compute an angle with zero vector')
+            else:
+                raise e
 
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
@@ -133,8 +156,8 @@ class Vector(object):
 # s2 = Vector(['2.751', '8.259', '3.985'])
 # print(s1.angle(s2, True))
 
-s1 = Vector(['-7.579', '-7.88'])
-s2 = Vector(['22.737', '23.64'])
+# s1 = Vector(['-7.579', '-7.88'])
+# s2 = Vector(['22.737', '23.64'])
 
 # s1 = Vector(['-2.029', '9.97', '4.172'])
 # s2 = Vector(['-9.231', '-6.639', '-7.245'])
@@ -145,5 +168,29 @@ s2 = Vector(['22.737', '23.64'])
 # s1 = Vector(['-2.328', '-7.284', '-1.214'])
 # s2 = Vector(['-1.821', '1.072', '-2.94'])
 
-print(s1.is_parallel(s2))
-print(s1.is_orthogonal(s2))
+# print(s1.is_parallel(s2))
+# print(s1.is_orthogonal(s2))
+
+# v = Vector(['3.039','1.879'])
+# w = Vector(['0.825','2.036'])
+# pro_v =  v.projection(w)
+# print(pro_v)
+
+# v = Vector(['-9.88','-3.264','-8.159'])
+# w = Vector(['-2.155','-9.353','-9.473'])
+# print (v.projection_orthogonal(w))
+
+v = Vector(['3.009','-6.172','3.692','-2.51'])
+w = Vector(['6.404','-9.144','2.759','8.718'])
+pro = v.component_parallel_to(w)
+pro_orh = v.component_orthogonal_to(w)
+sum_p_po = pro.plus(pro_orh)
+
+print (pro)
+print (pro_orh)
+print (sum_p_po)
+
+# v = Vector([3.039,1.879])
+# print(v)
+# w = Vector(['3.039','1.879'])
+# print(w)
