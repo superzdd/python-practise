@@ -16,12 +16,30 @@ class Vector(object):
                 raise ValueError
             self.coordinates = tuple([Decimal(x) for x in coordinates])
             self.dimension = len(coordinates)
+            self.idx = 0
 
         except ValueError:
             raise ValueError('The coordinates must be nonempty')
 
         except TypeError:
             raise TypeError('The coordinates must be an iterable')
+
+    def __str__(self):
+        return 'Vector: {}'.format(self.coordinates)
+
+    def __eq__(self, v):
+        return self.coordinates == v.coordinates
+
+    def __next__(self):
+       self.idx += 1
+       try:
+           return Decimal(self.coordinates[self.idx-1])
+       except IndexError:
+           self.idx = 0
+           raise StopIteration  # Done iterating.
+
+    def __getitem__(self,index):
+        return Decimal(self.coordinates[index])
 
     def plus(self, obj):
         result = [x + y for x, y in zip(self.coordinates, obj.coordinates)]
@@ -140,12 +158,6 @@ class Vector(object):
     def acreage_triangle(self,w):
         return self.acreage_parallelogram(w)/2
 
-    def __str__(self):
-        return 'Vector: {}'.format(self.coordinates)
-
-    def __eq__(self, v):
-        return self.coordinates == v.coordinates
-
 # s1 = Vector([8.218,-9.341])
 # s2 = Vector([-1.129,2.111])
 # print(s1.plus(s2))
@@ -226,17 +238,17 @@ class Vector(object):
 # w = Vector(['3.039','1.879'])
 # print(w)
 
-v = Vector(['8.462', '7.893', '-8.187'])
-w = Vector(['6.984', '-5.975', '4.778'])
+# v = Vector(['8.462', '7.893', '-8.187'])
+# w = Vector(['6.984', '-5.975', '4.778'])
 
-print(v.cross_product(w))
+# print(v.cross_product(w))
 
-v = Vector(['-8.987', '-9.838', '5.031'])
-w = Vector(['-4.268', '-1.861', '-8.866'])
+# v = Vector(['-8.987', '-9.838', '5.031'])
+# w = Vector(['-4.268', '-1.861', '-8.866'])
 
-print(v.acreage_parallelogram(w))
+# print(v.acreage_parallelogram(w))
 
-v = Vector(['1.5', '9.547', '3.691'])
-w = Vector(['-6.007', '0.124', '5.772'])
+# v = Vector(['1.5', '9.547', '3.691'])
+# w = Vector(['-6.007', '0.124', '5.772'])
 
-print(v.acreage_triangle(w))
+# print(v.acreage_triangle(w))

@@ -100,3 +100,8 @@ class Line(object):
 class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
+
+l_1 = Line(Vector(['4.046','2.836']),1.21)
+l_2 = Line(Vector(['10.115','7.09']),3.025)
+
+print(l_1)
