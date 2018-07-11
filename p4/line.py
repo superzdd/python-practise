@@ -88,6 +88,46 @@ class Line(object):
 
         return output
 
+    def is_parallel(self,l_other):
+        # 取两条直线的法向量，观察是否平行
+        # 如果平行，在l_other上取2点与self做法向量，观察是否与两条直线的法向量都垂直
+        vert_self = self.normal_vector
+        vert_other = l_other.normal_vector
+
+        return vert_self.is_parallel(vert_other)
+    
+    def is_one_line(self,l_other):
+        a,b = self.normal_vector
+        c,d = l_other.normal_vector
+        k_1 = self.constant_term
+        k_2 = l_other.constant_term
+
+        p_1 = a/c
+        p_2 = b/d
+        p_3 = k_1/k_2
+
+        return p_1 == p_2 and p_1 == p_3
+
+    def get_point_by_x( self , x ):
+        a,b = self.normal_vector
+        d_x = Decimal(str(x))
+        return ( self.constant_term - a * d_x ) / b
+
+    def get_point_by_y( self , y ):
+        a,b = self.normal_vector
+        d_y = Decimal(str(y))
+        return ( self.constant_term - b * d_y ) / a
+
+    def interscetion( self , l_other ):
+        a,b = self.normal_vector
+        c,d = l_other.normal_vector
+        k_1 = self.constant_term
+        k_2 = l_other.constant_term
+
+        p_x = ( d * k_1 - b * k_2 ) / ( a * d - b * c )
+        p_y = (-1 * c * k_1 + a * k_2)/( a * d - b * c )
+
+        return [p_x,p_y]
 
     @staticmethod
     def first_nonzero_index(iterable):
@@ -104,4 +144,37 @@ class MyDecimal(Decimal):
 l_1 = Line(Vector(['4.046','2.836']),1.21)
 l_2 = Line(Vector(['10.115','7.09']),3.025)
 
-print(l_1)
+print('is parallel:' + str(l_1.is_parallel(l_2)))
+print('is one line:' + str(l_1.is_one_line(l_2)))
+
+# l_3 = Line(Vector(['1','1']),0)
+# l_4 = Line(Vector(['2','2']),0)
+
+# print('is parallel:' + str(l_3.is_parallel(l_4)))
+# print('is one line:' + str(l_3.is_one_line(l_4)))
+
+# l_1 = Line(Vector(['7.204','3.182']),8.68)
+# l_2 = Line(Vector(['8.172','4.114']),9.883)
+# is_p = l_1.is_parallel(l_2)
+# is_o = l_1.is_one_line(l_2)
+# p_i = None
+# if (is_p == False):
+#     p_i = l_1.interscetion(l_2)
+
+
+# print('is parallel:' + str(is_p))
+# print('is one line:' + str(is_o))
+# print('intersction:' + str(p_i))
+
+l_1 = Line(Vector(['1.182','5.562']),6.744)
+l_2 = Line(Vector(['1.773','8.343']),9.525)
+is_p = l_1.is_parallel(l_2)
+is_o = l_1.is_one_line(l_2)
+p_i = None
+if (is_p == False):
+    p_i = l_1.interscetion(l_2)
+
+
+print('is parallel:' + str(is_p))
+print('is one line:' + str(is_o))
+print('intersction:' + str(p_i))

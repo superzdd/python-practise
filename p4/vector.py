@@ -94,7 +94,7 @@ class Vector(object):
         u2 = obj.normalize()
         abs_dot = round(abs(u1.dot(u2)), 10)
 
-        print('dot is {}'.format(abs_dot))
+        # print('dot is {}'.format(abs_dot))
         return (abs_dot > (1 - tolerance)) and (abs_dot < (1 + tolerance))
 
     def is_orthogonal(self, obj, tolerance=1e-10):
