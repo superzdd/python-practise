@@ -14,32 +14,12 @@ class Vector(object):
                 raise ValueError
             self.coordinates = tuple([Decimal(x) for x in coordinates])
             self.dimension = len(coordinates)
-            self._i = 0
 
         except ValueError:
             raise ValueError('The coordinates must be nonempty')
 
         except TypeError:
             raise TypeError('The coordinates must be an iterable')
-
-    # def __iter__(self):
-    #     return self
-
-    def next(self):
-        if self._i == 0:
-            self._i += 1
-            return self.coordinates
-        elif self._i == 1:
-            self._i += 1
-            return self.dimension
-        else:
-            raise StopIteration()
-    
-    def __str__(self):
-        return 'Vector: {}'.format(self.coordinates)
-
-    def __eq__(self, v):
-        return self.coordinates == v.coordinates
 
     def plus(self, obj):
         result = [x + y for x, y in zip(self.coordinates, obj.coordinates)]
@@ -128,6 +108,12 @@ class Vector(object):
                 raise Exception('Cannot compute an angle with zero vector')
             else:
                 raise e
+
+    def __str__(self):
+        return 'Vector: {}'.format(self.coordinates)
+
+    def __eq__(self, v):
+        return self.coordinates == v.coordinates
 
 # s1 = Vector([8.218,-9.341])
 # s2 = Vector([-1.129,2.111])
