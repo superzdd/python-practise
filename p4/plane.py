@@ -42,6 +42,21 @@ class Plane(object):
             else:
                 raise e
 
+    def is_parallel_to(self,other):
+        # 取两条直线的法向量，观察是否平行
+        # 如果平行，在other上取2点与self做法向量，观察是否与两条直线的法向量都垂直
+        vert_self = self.normal_vector
+        vert_other = other.normal_vector
+
+        return vert_self.is_parallel(vert_other)
+    
+    def is_equal_to(self,other):
+        b_self = self.basepoint
+        b_other = other.basepoint
+
+        l = b_self.minus(b_other)
+
+        return l.is_orthogonal(self.normal_vector) and l.is_orthogonal(other.normal_vector)
 
     def __str__(self):
 
@@ -100,3 +115,19 @@ class Plane(object):
 class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
+
+p_1 = Plane(Vector(['-0.412','3.806','0.728']),-3.46)
+p_2 = Plane(Vector(['1.03','-9.515','-1.82']),8.65)
+
+# p_1 = Plane(Vector(['2.611','5.528','0.283']),4.6)
+# p_2 = Plane(Vector(['7.715','8.306','5.342']),3.76)
+
+# p_1 = Plane(Vector(['-7.926','8.625','-7.212']),-7.952)
+# p_2 = Plane(Vector(['-2.642','2.875','-2.404']),-2.443)
+
+
+is_p = p_1.is_parallel_to(p_2)
+is_e = p_1.is_equal_to(p_2)
+
+print ('Is parallel: {}'.format( str( is_p ) ))
+print ('Is equal: {}'.format( str( is_e ) ))
