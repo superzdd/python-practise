@@ -51,12 +51,25 @@ class Plane(object):
         return vert_self.is_parallel(vert_other)
     
     def is_equal_to(self,other):
-        b_self = self.basepoint
-        b_other = other.basepoint
+        # b_self = self.basepoint
+        # b_other = other.basepoint
+        # l = b_self.minus(b_other)
+        # return l.is_orthogonal(self.normal_vector) and l.is_orthogonal(other.normal_vector)
+        a_1,b_1,c_1 = self.normal_vector
+        a_2,b_2,c_2 = other.normal_vector
+        k_1 = self.constant_term
+        k_2 = other.constant_term
 
-        l = b_self.minus(b_other)
+        p_1 = a_1/a_2
+        cv_b_1 = p_1*b_2
+        cv_c_1 = p_1*c_2 
+        cv_k_1 = p_1*k_2
 
-        return l.is_orthogonal(self.normal_vector) and l.is_orthogonal(other.normal_vector)
+        eq_b = MyDecimal(cv_b_1 - b_1).is_near_zero()
+        eq_c = MyDecimal(cv_c_1 - c_1).is_near_zero()
+        eq_k = MyDecimal(cv_k_1 - k_1).is_near_zero()
+
+        return eq_b and eq_c and eq_k
 
     def __str__(self):
 
