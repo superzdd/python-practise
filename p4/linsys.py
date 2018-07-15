@@ -80,8 +80,8 @@ class LinearSystem(object):
 
         print('get system')
         print(system)
-        # 交换等式位置，使第一行等式第一项不为0，一共三行
-        sort_row = 3
+        # 交换等式位置，使第一行等式第一项不为0，一共三行 = 向量的维度
+        sort_row = self.dimension
         if(len(system) < sort_row):
             sort_row = len(system)
 
@@ -95,20 +95,39 @@ class LinearSystem(object):
 
         print('compute after sort')
         print(system)
-        # 第一行不动，从第二（n）行开始，检查前n项的数字是否为0，如果不为0，用(n-1)行转换为0
-        for x in range(1, sort_row):
+        # 逐行清理首项
+        # 从第n行开始(n>=2)，检查前n-1项的数字是否为0，如果不为0，用(n-1)行转换为0
+        clear_dimension_index = 1
+        for x in range(1, len(system)):
+            if(clear_dimension_index == self.dimension):
+                system[x] = Plane()
+                continue
             for y in range(x):
                 if(system[x].normal_vector[y] != 0):
                     row_add = y
 
-                    r_coe = system[row_add].normal_vector[y] / \
-                        system[x].normal_vector[y]
-
+                    r_coe = system[x].normal_vector[y] / system[row_add].normal_vector[y]
+                        
                     system.add_multiple_times_row_to_row(-1 * r_coe, row_add, x)
-            if(system[x].normal_vector[x] != 0 ):
-                system.multiply_coefficient_and_row(1/system[x].normal_vector[x],x)
 
-        print('compute after triangular')
+                    # 校验 0 == 0, 出现这个等式说明可能有多解，continue, 找到下一行继续运算
+                    if( sum(system[x].normal_vector) == 0 and system[x].constant_term == 0):
+                        print('clear trouble: 0 = 0, continue')
+                        continue
+
+                    # 校验 0 == k, 出现这个等式说明无解，跳出循环
+                    if( sum(system[x].normal_vector) == 0 and system[x].constant_term != 0):
+                        print('clear trouble: 0 = k, break')
+                        break
+
+            clear_dimension_index += 1 
+            # if(system[x].normal_vector[x] != 0 ):
+            #     system.multiply_coefficient_and_row(1/system[x].normal_vector[x],x)
+
+        print('compute after clear, clear {}'.format(clear_dimension_index))
+
+        if(clear_dimension_index < self.dimension):
+            print()
         print(system)
         return system
 
