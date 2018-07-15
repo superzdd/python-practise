@@ -175,6 +175,6 @@ if (is_p == False):
     p_i = l_1.interscetion(l_2)
 
 
-print('is parallel:' + str(is_p))
-print('is one line:' + str(is_o))
-print('intersction:' + str(p_i))
+# print('is parallel:' + str(is_p))
+# print('is one line:' + str(is_o))
+# print('intersction:' + str(p_i))

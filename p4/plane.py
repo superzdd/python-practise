@@ -116,6 +116,8 @@ class Plane(object):
 
         return output
 
+    def __eq__(self, v):
+        return self.normal_vector == v.normal_vector and self.constant_term == v.constant_term
 
     @staticmethod
     def first_nonzero_index(iterable):
@@ -142,5 +144,5 @@ p_2 = Plane(Vector(['1.03','-9.515','-1.82']),8.65)
 is_p = p_1.is_parallel_to(p_2)
 is_e = p_1.is_equal_to(p_2)
 
-print ('Is parallel: {}'.format( str( is_p ) ))
-print ('Is equal: {}'.format( str( is_e ) ))
+# print ('Is parallel: {}'.format( str( is_p ) ))
+# print ('Is equal: {}'.format( str( is_e ) ))
